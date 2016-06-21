@@ -1,0 +1,107 @@
+\chapter{引言}
+\label{cha:introduction}
+
+本章内容安排如下：~\ref{sec:background} 小节介绍本文研究背景，要解决的问题及研究的目的；~\ref{sec:literaturereview} 小节整理并回顾相关的国内外研究成果，并讨论其优缺点；~\ref{sec:content} 小节介绍本文研究讨论的主要内容；~\ref{sec:ourcontribution} 小节介绍本文的主要贡献点；最后，~\ref{sec:thesisstructure} 小节介绍本文结构组织。
+
+\section{研究背景}
+\label{sec:background}
+
+多模态信息的融合有助于更好地利用不同模态信息之间的互补性，挖掘信息的潜力，提高机器人识别、感知和操作的精确度和鲁棒性，提高机器人系统的稳定性。近年来机器人的识别感知技术在诸如空间探索~\inlinecite{lovchik1999robonaut, hirzinger1994rotex, huangxiaorui2002multisensor}、机械制造~\inlinecite{ogorodnikova2010safe}、灾难应对~\inlinecite{burke2004moonlight, balakirsky2007towards}、军事安保~\inlinecite{barnes2010human}以及医疗卫生~\inlinecite{pierrot1999hippocrate, lavallee1992image}等领域获得了广泛应用。而随着各式各样的机器人应用日趋普及，以及对于机器人感知精度要求的不断提高，信息融合策略~\inlinecite{mahler2007statistical}也变得日益重要。同时，由于传感器技术不断进步，可以收集的信息模态越来越多~\inlinecite{akyildiz2002survey}，也为信息融合策略的研究提供了背景和技术支持~\inlinecite{koushanfar2002error, futagawa2010real}。现在我们已经可以较好地提取包括颜色信息、深度信息、触觉信息、滑觉信息、声音信息、电学信息等在内的多种模态的信息~\inlinecite{akyildiz2002wireless}。因为不同模态的信息（例如RGB信息和深度信息）含有的目标物体的特征是不同方面的~\inlinecite{choi2011detecting}，例如，通过对颜色信息的处理我们可以得到目标物体的颜色特征，图案纹理特征和光照特征等；而通过对深度信息的处理我们可以获得目标物体在空间中的形状特征和更加清晰的边缘特征等信息。所以不同模态的信息之间天然地具有较强的互补性。不过我们在研究过程中注意到，由于每种信息提取方式在提取信息时都会选择性地保留部分原有信息~\inlinecite{guyon2006introduction}，所以不同的信息提取方式之间应该也具有一定的互补性~\inlinecite{guyon2008feature}。
+
+此外，深度学习~\inlinecite{weigel2002deep}的飞速发展使得大量识别任务的准确率迅速提升。例如，~\inlinecite{lee2009unsupervised}使用深度学习来进行音频分类；~\inlinecite{sun2014deep1, sun2014deep2}使用深度学习来进行人脸识别；~\inlinecite{gupta2014learning, spinello2012leveraging}使用深度学习来提取RGB-D的信息。所以我们也打算使用深度学习的方法来进行多模态信息融合。不过由于深度学习对于数据量的要求是巨大的~\inlinecite{simonyan2014very}，而目前已有的多模态数据集大小往往达不到深度学习的要求，所以我们使用已经预先训练的深度学习模型来进行信息提取~\inlinecite{zeiler2014visualizing}。同时，由于我们选用的模型是使用RGB图片信息训练的，所以在使用它提取深度信息之前我们还使用了深度信息对其进行微调~\inlinecite{hinton2012improving}，以便使原模型可以更好地适应深度信息。
+
+综上所述，本研究要解决的问题是：
+\begin{enumerate}
+  \item 寻找适用于不同模态的信息和不同信息提取方法的不同层次的信息融合策略，有效利用模态间和方法间数据互补性。
+  \item 深度学习在多模态信息融合中的应用。
+  \item 深度学习中多模态信息数据量不足的问题。
+\end{enumerate}
+
+而本研究的主要目的是进行深度学习与多模态信息融合策略的研究，以便为实现机器人的精细感知和精细操纵提供技术支持。
+
+\section{文献综述}
+\label{sec:literaturereview}
+
+最早的有关信息融合的应用于第二次世界大战中出现在军事领域，~\inlinecite{wangxin2006multisensor}将高射炮火控系统中的雷达传感器和光学传感器融合起来应用，达到了既提升了雷达系统的测距精度，又增强了系统的鲁棒性的效果，使其抗恶劣天气干扰能力大幅增强。而数据融合（Data Fusion）概念，也是由美国国防部下属研究机构于1973年正式提出~\inlinecite{hall1997introduction}，并应用于水下声纳系统，并随后在各类军用系统中得到广泛使用。进入20世纪80年代，军事上对于信息精度的要求迅速提升~\inlinecite{heyou1996multisensor}，使得Data Fusion得到了各国研究人员的广泛关注。
+
+目前有关信息融合的研究，按信息的来源可以分为：
+\begin{enumerate}
+  \item 多传感器信息融合。
+  \item 多模态信息融合。
+\end{enumerate}
+按融合层次可以分为~\inlinecite{luo1999review}：
+\begin{enumerate}
+  \item 数据层融合。
+  \item 特征层融合。
+  \item 决策层融合。
+\end{enumerate}
+
+多传感器信息融合的意义在于，每种传感器都有自己的精度、误差范围以及作用范围~\inlinecite{neal2002shack}。而在实际操作中通过将多个同一种类的传感器组合使用，往往可以提高测量精度，提升系统稳定性以及增大测量范围~\inlinecite{waltz1990multisensor}。~\inlinecite{shekhar1986sensor} 通过使用多个传感器，在多个定位结果中求解最小带权均方误差的方法给出最终定位结果，提升了定位系统的稳定性，并将此方法应用到了机器人操作中。综合使用多个传感器取均值或投票来产生最终结果的方法在机器人感知识别和精细操纵，以及各种智能系统的构建中比较常见，例如~\inlinecite{luo1989multisensor, luo1995multisensor}，而~\inlinecite{luo2002multisensor} 则对多传感器融合集成做了综述。~\inlinecite{dai2013multichannel} 是对颜色信息中的多个通道进行信息融合，求其非局部平均值，以降低噪声对感知结果的影响，提高数据信噪比和感知质量。根据~\inlinecite{khaleghi2013multisensor} 的整理和综述，多传感器融合的主要方法有：加权平均法，例如~\inlinecite{fanxinnan2005multisensor}；多数投票法，例如~\inlinecite{waske2007fusion}；~\inlinecite{welch2004introduction}和~\inlinecite{atry2010multimodal} 使用卡尔曼滤波的方法来融合信息；~\inlinecite{yizhengjun2002multisource} 使用了贴近度算法；~\inlinecite{pawlak1991rough} 介绍了基于粗糙集和模糊理论的信息融合策略；~\inlinecite{goodman2013mathematics} 中还介绍了可用于信息融合的随机集方法；当然还有经典的贝叶斯融合方法~\inlinecite{stone2013bayesian, johansson2008bayesian, li2007neural}；以及神经网络方法~\inlinecite{wong1998data, dornfeld1990neural} 等。
+具体地说，~\inlinecite{waske2007fusion}使用了SVM（支持向量机）对多个传感器的分类结果进行了多数投票产生最终结果，有效地改进了分类的准确率。不过由于通常情况下的SVM只能给出分类结果，而不能给出分类的自信度（即分类结果属于每一类的概率），所以使用SVM意味着只能使用多数投票法。不过这就对参与投票的传感器的数量有了要求，或者需要其他的规定来避免平局的出现。而在本文中我们使用了带权的SVM，可以进行带权投票。~\inlinecite{johansson2008bayesian} 使用了贝叶斯网络来实现空中监控的威胁评估（threat evaluation），可以融合多种因素和信息，并且具有一定的容错性。~\inlinecite{wong1998data} 使用经过预先训练的神经网络在经过卡尔曼滤波提取出的多传感器特征中学习，用来实现目标追踪，并进而实现机器人运动控制。
+
+多模态信息融合的意义在于，不同模态信息之间往往具有天然的互补性，例如RGB图片可以提供颜色和纹理特征，深度图片可以提供三维形状信息和边界特征，触觉信息可以提供物体的力学特征，滑觉信息可以提供物体的摩擦力特征等等。而利用这些模态之间的互补性有助于挖掘信息的潜力，提高机器人识别、感知和操作的精确度，提高机器人系统及智能系统的稳定性。
+多模态融合的方法与多传感器融合的方法有类似之处。例如~\inlinecite{manduchi1999bayesian} 使用了朴素贝叶斯方法将颜色和材质信息融合起来进行图片分割，获得了优于只使用单一模态进行图片分割的效果。而~\inlinecite{boutell2004bayesian} 则使用了相机产生的除了图片信息之外的元数据，包括曝光时间、闪光信息等，将其与图片信息在概率层进行贝叶斯融合，并在区分室内室外和识别日落场景等任务中都取得了更好效果。~\inlinecite{senoo2009skillful} 将视觉和触觉信息融合起来，实现了对于机械手的高速操纵，和更加熟练的控制。另外，~\inlinecite{fay2000fusion} 将一个低光摄像头，一个短波红外摄像头和一个长波红外摄像头获得的实时图片信息融合起来输入神经网络，构建出夜视图片，获得了较好的效果。
+不过多模态融合的方法与多传感器融合的方法也有不同之处。因为不同模态的信息结构和维度都可能有很大不同，所以有时数据层和特征层的融合是不可行的，只能进行决策层的融合~\inlinecite{han2004statistical} 。如果想要将不同模态的信息在数据层或特征层融合起来，可以像~\inlinecite{zhang2013multi} 一样采用为每一模态学习不同的度量的方法来解决，这样可以通过不同的度量来正规化每个模态的信息，使它们在融合时得到平衡。
+我国在信息融合领域一直紧跟研究前沿，近年来的研究成果包括~\inlinecite{gaofangwei2007multisensor}、~\inlinecite{haoruize2007multisensor}、~\inlinecite{zhaodandan2007multisensor}等。
+
+机器学习的快速发展带给了我们诸多便利~\inlinecite{bishop2006pattern} 。现在我们不仅可以使用Bag of words来提取信息~\inlinecite{filliat2007visual} ，使用SVM~\inlinecite{cortes1995support} 或贝叶斯分类器~\inlinecite{wang2007naive} 来分类信息，还可以使用各种各样的神经网络来完成模型学习，提取特征，以及分类、识别、感知、分割等任务~\inlinecite{haykin2004comprehensive, hagan1996neural} 。近年来深度学习日趋成熟，被广泛应用于图片、语音、视频的识别~\inlinecite{jaitly2012application}，并且也逐步被应用于多模态融合。~\inlinecite{ngiam2011multimodal} 提出了一种使用深度神经网络学习多模态信息的方法，并在图像——声音数据集中得到了验证。
+而使用RGB-D信息融合的研究也越来越多。~\inlinecite{lai2011large} 在2011年收集了一个大型的包含属于51种日常用品的300个物体实例的RGB-D数据库，并给出了一些识别、分割任务的Benchmark，比如使用Linear SVM和Kernel SVM以及随机森林（Random Forest）的识别准确率。
+接下来被应用于RGB-D信息融合的方法有：实例距离学习（Instance Distance Learning）~\inlinecite{lai2011sparse}，核函数描述符（Kernel descriptor）~\inlinecite{bo2011depth, blum2012learned}，分层匹配追踪（HMP）~\inlinecite{bo2011hierarchical}，空间金字塔与分层匹配追踪（SP-HMP）~\inlinecite{bo2013unsupervised}，卷积递归神经网络~\inlinecite{socher2012convolutional, cheng2014semi}，决策树（decision trees）~\inlinecite{asif2015efficient}，以及深度学习~\inlinecite{schwarz2015rgb}~\inlinecite{eitel2015multimodal}。
+具体地说，~\inlinecite{lai2011sparse} 将每一个新的场景信息跟已有的信息相比，并计算出距离。而词袋模型（Bag of Words）方法是将原始信息投影到另一个稀疏空间，转换为一种稀疏编码~\inlinecite{yang2009linear}，使其更加可分。~\inlinecite{bo2013unsupervised} 使用了两层HMP，第一层用来进行信息提取，第二层用来进行空间压缩，并且可以和第一层联合起来构成空间金字塔，有效地提升了准确率。~\inlinecite{socher2012convolutional} 使用一组随机的递归神经网络在CNN特征的基础上进行信息提取，证明了随机权值的神经网络也可有效地提取信息。不过~\inlinecite{socher2012convolutional} 虽然使用了神经网络，却没有使用神经网络进行学习，而是采用随机的权值。~\inlinecite{asif2015efficient} 使用了一组随机的决策树投票产生最终结果。~\inlinecite{schwarz2015rgb} 则使用了在ImageNet~\inlinecite{deng2009imagenet} 中训练过的Caffe~\inlinecite{jia2014caffe} 深层卷积神经网络模型分别在RGB和深度图片中提取特征，即将神经网络中的最后一个卷积层的特征作为输出。~\inlinecite{eitel2015multimodal} 也使用同样的模型，其不同之处是：第一，并没有直接使用该模型，而是在原有基础上使用RGB-D的信息进一步微调；第二，也不是使用此模型提取信息，而是直接改变了此神经网络的结构使其可以接受RGB-D信息，输出分类结果。
+
+
+\section{研究内容}
+\label{sec:content}
+
+本文的研究内容整体上可以分为三个部分，分别对应着\ref{sec:background} 小节中所提出的三个问题：
+\begin{enumerate}
+  \item 寻找适用于多模态信息和多信息提取方法的不同层次的信息融合策略，有效利用模态间和方法间数据互补性的方法。
+  \item 深度学习在多模态信息融合中的应用。
+  \item 深度学习中多模态信息数据量不足的问题。
+\end{enumerate}
+
+研究内容:
+
+\begin{enumerate}
+\item 多模态信息方法间的融合策略
+
+首先，由于RGB-D识别的应用需求巨大，应用前景广阔，我们选用了上文中提到的由华盛顿大学收集并处理的RGB-D数据集~\inlinecite{lai2011large} 作为我们的训练集。其次，我们选用了理论发展较为成熟且在分类、识别等领域的效果已经得到证实的信息提取方式：分层匹配追踪和以及随机权值卷积递归神经网络，对颜色和深度图片分别进行信息提取。其中在使用随机权值神经网络时我们使用了预先在更大的数据集上学习的卷积过滤器（filter）来进行图片卷积特征提取。然后使用一组随机产生的递归神经网络对卷积模式进行降维处理，相当于构建了空间金字塔（Spatial Pyramid），然后选取空间金字塔的最上层，作为分类特征。实验表明，虽然神经网络的权值是随机产生的，但是将一组（含64或128棵递归神经网络）结合起来之后往往可以取得较好的识别效果。如前所述，因为不同模态之间具有“天然的”互补性，所以我们将颜色和深度的高层特征提取出来之后直接进行连接，使用SVM分类器分类即可取得不错的准确率的提升；不过由于不同方式提取的信息之间结构、维度差异较大，直接将它们在特征层融合起来的效果并不好，所以我们使用了决策层融合的方式。为了高效地产生决策层投票权值，我们使用并改进了SVM分类器，使其可以输出分类概率，然后在此基础上采用最大似然的方法进行方法间的决策层信息融合，并探究其方法互补性。
+
+多模态信息方法间的融合策略的意义在于，利用优秀的方法间融合策略可以更高效地执行（节省计算资源），更好地利用不同方法之间的互补性，弥补不同方法的不足。在分类、识别等任务中获得更好的效果（提高准确率，降低不确定性）。并且具备更好的可拓展性（即可以更加方便地加入新的分类方法）。而且根据之前的文献综述可以看出，大量已有工作都是局限于利用多传感器或不同模态之间的融合，而我们引入的不同方法之间的融合，可以成为一个新的研究方向。
+
+\item 引入深度学习方法
+
+其次，由于深度学习发展迅速，在许多任务中已经超过传统的机器学习方法，所以本文为了突破传统信息提取方法的局限，还引入了深度学习方法。在实际操作中我们使用了八层的深度卷积神经网络在颜色信息和深度信息中分别进行深度学习，然后使用学习出来的模型将相应的特征层分类信息提取出来，并且对不同模态在特征层进行融合，再使用SVM分类器给出识别结果。此外，本文还提出了一种将深度信息转换为图片信息的正规化方法。此种方法对于深度信息的不同部分采用不同的正规化尺度，这种方法的优势是：一方面保留了目标物体与背景（和噪声）之间的间隔，另一方面还保留了详细的目标物体之内立体形状变化的信息。
+
+引入深度学习方法的意义在于，它在许多方面可以弥补传统信息提取方法的不足，突破传统方法的局限。尤其在数据量足够大的时候，可以获得远高于传统方法的分类、识别准确率。
+
+\item 引入Pretrained模型及综合模型的提出
+
+同时，为了解决深度学习中数据量不足的问题，我们使用了预先在海量图片数据集ImageNet~\inlinecite{deng2009imagenet} 中训练过的模型来进行信息提取。由于已有模型是在颜色信息数据集中训练的，对于颜色信息我们直接使用了Pretrained模型，在对深度信息进行提取的之前，我们使用已有深度数据对原有模型进行了微调，以便使它可以更好地适应深度信息的提取。最后，我们基于以上研究提出了综合分层匹配追踪、随机权值卷积递归神经网络以及深度学习三种方法的信息融合识别模型。将多种方法及不同模态在不同层次采用不同的融合方法进行综合使用，得到最终的分类结果。
+
+引入Pretrained模型的意义在于，在训练数据不足的时候也可以使用深度学习获得更好的效果，同时还提高了训练效率。综合分类模型的意义在于，提升识别的准确率和稳定性，并且对于大规模的数据集和小规模的数据集均可取得较好的识别结果。
+\end{enumerate}
+
+\section{主要贡献}
+\label{sec:ourcontribution}
+
+本文的贡献主要有以下五点：
+
+\begin{enumerate}
+\item 本文提出了利用方法间的互补性来提高多模态信息的利用效率的思路。使用并改进了SVM分类器，使其可以输出分类自信度，然后在此基础上采用带权投票的方法将包括分层匹配追踪、神经网络在内的多种信息提取方法融合起来，并探究其方法互补性。实验证明，将不同模态的信息或不同信息提取方法进行融合都可以使得我们对目标物理的特征的理解变得更加全面，可以获得更好的识别效果。
+
+\item 本文在传统信息提取方法之外还引入了深度学习方法。即使用多层CNN在颜色信息和深度信息中分别进行学习，然后将相应的特征层信息提取出来，并进行特征层的信息融合，使用SVM分类器给出识别结果。
+
+\item 本文还提出了一种将深度信息转换为图片信息的正规化方法。此种方法对于深度信息的不同部分采用不同的正规化尺度，从而实现了既保留了目标物体与背景之间的间隔，同时又保留了目标物体之内形状变化的目的。实验证明，所提的深度信息正规化方法可以提升深度学习的识别准确率。
+
+\item 本文使用了 Pretrained 模型来辅助深度学习提取信息。而且由于已有模型是在颜色信息数据集中训练的，我们使用原模型直接进行颜色信息的提取，使用在深度信息数据集上微调过的模型进行深度信息的提取。实验证明，使用RGB图片预先训练的深度学习模型可以较好地识别颜色和深度信息。
+
+\item 最后，本文基于以上研究提出了综合分层匹配追踪、随机权值卷积递归神经网络以及深度学习三种方法的信息融合识别模型。实验证明，我们的融合模型可以较好地利用模态间以及方法间的信息互补性，提升识别的准确率和稳定性，并且对于大量的数据和小量的数据均可取得较好的识别结果。
+\end{enumerate}
+
+\section{本文结构}
+\label{sec:thesisstructure}
+
+本文接下来的章节有：第~\ref{cha:background} 章介绍了一些与本文研究相关的背景知识；第~\ref{cha:fStrategy} 章主要介绍了方法内以及方法间的多模态融合策略探究，包括其融
+合思想、操作步骤和实验结果；第~\ref{cha:deeplearning} 章介绍了使用深度学习进行多模态信息融合的思路、具体操作和实验结
+果；第~\ref{cha:comprehensiveModal} 章综合之前的研究提出了一个使用了多模态融合的综合识别模型；第~\ref{cha:conclusion} 章给出了对本文的总结和对未来研究的展望。
